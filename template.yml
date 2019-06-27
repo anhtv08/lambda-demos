@@ -44,6 +44,15 @@ Resources:
           Properties:
             Path: /
             Method: post
+  signingS3LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: s3_signature.s3_handlers.lambda_handler
+      Runtime: python3.7
+      Role:
+        Fn::GetAtt:
+          - LambdaExecutionRole
+          - Arn
   LambdaExecutionRole:
     Description: Creating service role in IAM for AWS Lambda
     Type: AWS::IAM::Role
