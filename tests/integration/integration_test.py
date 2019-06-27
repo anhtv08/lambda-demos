@@ -32,14 +32,14 @@ class TestHandlerS3SigningRequest(unittest.TestCase):
                         "s3SchemaVersion": "1.0",
                         "configurationId": "ID found in the bucket notification configuration",
                         "bucket": {
-                            "name": "test-bucket",
+                            "name": "j-test-lambda-s3",
                             "ownerIdentity": {
                                 "principalId": "Amazon-customer-ID-of-the-bucket-owner"
                             },
                             "arn": "bucket-ARN"
                         },
                         "object": {
-                            "key": "test.txt",
+                            "key": "rule_util.py",
                             "size": 1024,
                             "eTag": "object eTag",
                             "versionId": "object version if bucket is versioning-enabled, otherwise null",

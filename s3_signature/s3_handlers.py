@@ -1,12 +1,13 @@
 import boto3
 import logging
+from botocore.exceptions import ClientError
 
 """ a simple example using lambda function to 
   get event from s3 when new object created and created a pre-signed url to the object
   once its completed then send a notification to sqs queue
 
 """
-s3_client = boto3.client('s3', config=boto3.session.Config(s3={'addressing_style': 'path'}, region_name='us-west-2', signature_version='s3v4'))
+s3_client = boto3.client('s3')
 sqs_client = boto3.client('sqs')
 
 
@@ -28,8 +29,7 @@ def create_presigned_url(s3_client, bucket_name, object_name, expirations=3600):
                 'Bucket': bucket_name,
                 'Key': object_name
             },
-            ExpiresIn=expirations,
-            HttpMethod='GET'
+            ExpiresIn=expirations
         )
 
         print("pre-signed-url: " + response)
