@@ -6,7 +6,9 @@ import logging
   once its completed then send a notification to sqs queue
 
 """
-s3_client = boto3.client('s3', signature_version="s3v4")
+s3_client = boto3.client('s3',
+                         config=boto3.session.Config(signature_version='s3v4'),
+                         region_name='us-west-2')
 sqs_client = boto3.client('sqs')
 
 
