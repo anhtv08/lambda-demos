@@ -66,6 +66,6 @@ Resources:
           Action: sts:AssumeRole
       Path: /
       ManagedPolicyArns:
-        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AWSLambdaFullAccess'
+        - !Sub 'arn:${AWS_PARTITION}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
 
 #      arn:aws:iam::aws:policy/AWSLambdaFullAccess
