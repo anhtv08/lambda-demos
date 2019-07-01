@@ -3,6 +3,7 @@ import unittest
 import botocore
 from botocore.stub import Stubber
 
+import events
 s3_client = botocore.session.get_session().create_client('s3')
 sqs_client = botocore.session.get_session().create_client('sqs')
 
@@ -85,7 +86,9 @@ class TestHandlerS3SigningRequest(unittest.TestCase):
         #
         #     assert expected_pre_signed_url == result
         #     stubber.deactivate()
-
+    def test_sending_signing_event_to_kinesis(self):
+        testEvent = events.testEvent
+        # testEvent.
 
 if __name__ == '__main__':
     unittest.main()

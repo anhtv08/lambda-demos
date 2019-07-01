@@ -24,6 +24,19 @@ Globals:
       Role: !Ref CodeDeployRole
 
 Resources:
+
+  eventClickStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: eventClientStream
+      RetentionPeriodHours: 168
+      ShardCount: 1
+      Tags:
+        - Key: Environment
+          Value: development
+        - Key: developer
+          Value: joeytrang
+
   HelloWorld:
     Type: AWS::Serverless::Function
     Properties:
