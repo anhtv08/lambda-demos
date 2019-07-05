@@ -33,6 +33,8 @@ def create_presigned_url(s3_client, bucket_name, object_name, expirations=3600):
         )
 
         print("pre-signed-url: " + response)
+
+        print("Update alias of lambda function")
         return response
     except ClientError as e:
         logging.error(e)
