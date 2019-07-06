@@ -36,7 +36,6 @@ Resources:
       Description: 'Integrating lambda with Parameter Store'
       Handler: 'config_store.config_handler.lambda_handler'
       Role: !GetAtt ParameterStoreBlogFunctionRoleDev.Arn
-      CodeUri: './code'
       Environment:
         Variables:
           ENV: 'dev'
