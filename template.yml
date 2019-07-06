@@ -28,20 +28,105 @@ Globals:
 
 Resources:
 
-  eventClickStream:
-    Type: AWS::Kinesis::Stream
+  # ADD: lambda function using system parameter from config store
+  ParameterStoreBlogFunctionDev:
+    Type: 'AWS::Serverless::Function'
     Properties:
-      Name: eventClientStream
-      RetentionPeriodHours: 168
-      ShardCount: 1
-      StreamEncryption:
-        EncryptionType: KMS
-        KeyId: !Ref 'streamEncryptedKey'
-      Tags:
-        - Key: Environment
-          Value: development
-        - Key: developer
-          Value: joeytrang
+      FunctionName: 'ParameterStoreBlogFunctionDev'
+      Description: 'Integrating lambda with Parameter Store'
+      Handler: 'config_store.config_handler.lambda_handler'
+      Role: !GetAtt ParameterStoreBlogFunctionRoleDev.Arn
+      CodeUri: './code'
+      Environment:
+        Variables:
+          ENV: 'dev'
+          APP_CONFIG_PATH: 'parameterStoreBlog'
+          AWS_XRAY_TRACING_NAME: 'ParameterStoreBlogFunctionDev'
+      Runtime: 'python3.6'
+      Timeout: 5
+      Tracing: 'Active'
+
+    ParameterStoreBlogFunctionRoleDev:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - 'lambda.amazonaws.com'
+              Action:
+                - 'sts:AssumeRole'
+        ManagedPolicyArns:
+          - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        Policies:
+          - PolicyName: 'ParameterStoreBlogDevParameterAccess'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 'ssm:GetParameter*'
+                  Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/dev/parameterStoreBlog*'
+          - PolicyName: 'ParameterStoreBlogDevXRayAccess'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 'xray:PutTraceSegments'
+                    - 'xray:PutTelemetryRecords'
+                  Resource: '*'
+
+  ParameterStoreBlogDevEncryptionKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: 'alias/ParameterStoreBlogKeyDev'
+      TargetKeyId: !Ref ParameterStoreBlogDevEncryptionKey
+    ParameterStoreBlogDevEncryptionKey:
+      Type: AWS::KMS::Key
+      Properties:
+        Description: 'Encryption key for secret config values for the Parameter Store blog post'
+        Enabled: True
+        EnableKeyRotation: False
+        KeyPolicy:
+          Version: '2012-10-17'
+          Id: 'key-default-1'
+          Statement:
+            - Sid: 'Allow administration of the key & encryption of new values'
+              Effect: Allow
+              Principal:
+                AWS:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:user/${IAMUsername}'
+              Action:
+                - 'kms:Create*'
+                - 'kms:Encrypt'
+                - 'kms:Describe*'
+                - 'kms:Enable*'
+                - 'kms:List*'
+                - 'kms:Put*'
+                - 'kms:Update*'
+                - 'kms:Revoke*'
+                - 'kms:Disable*'
+                - 'kms:Get*'
+                - 'kms:Delete*'
+                - 'kms:ScheduleKeyDeletion'
+                - 'kms:CancelKeyDeletion'
+              Resource: '*'
+            - Sid: 'Allow use of the key'
+              Effect: Allow
+              Principal:
+                AWS: !GetAtt ParameterStoreBlogFunctionRoleDev.Arn
+              Action:
+                - 'kms:Encrypt'
+                - 'kms:Decrypt'
+                - 'kms:ReEncrypt*'
+                - 'kms:GenerateDataKey*'
+                - 'kms:DescribeKey'
+              Resource: '*'
+
+  # END lambda function using system parameter from config store
 
   HelloWorld:
     Type: AWS::Serverless::Function

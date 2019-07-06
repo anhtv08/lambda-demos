@@ -5,6 +5,14 @@
       {
         "Name": "httpErrorCount",
         "Value": "10"
+      },
+      {
+        "Name": "Environment",
+        "Value": "Dev"
+      },
+      {
+         "Name": "departmentCostCenter",
+        "Value": "Asian"
       }
      ],
     "Values": [1,2,3,4,5,6],
