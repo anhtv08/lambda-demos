@@ -24,8 +24,6 @@ Globals:
       Role: !Ref CodeDeployRole
 
 Resources:
-
-  # ADD: lambda function using system parameter from config store
   ParameterStoreBlogFunctionDev:
     Type: 'AWS::Serverless::Function'
     Properties:

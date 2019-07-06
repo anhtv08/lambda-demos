@@ -11,9 +11,3 @@ def get_temp_access_token(client, role: str):
         )
         print(temp_sec_token)
         return temp_sec_token['Credentials']
-
-
-
-
-
-
