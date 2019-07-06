@@ -1,10 +1,5 @@
 import unittest
 import index
-from iam.accessManagement import get_temp_access_token
-import boto3
-from moto import mock_sts
-
-
 class TestHandlerCase(unittest.TestCase):
 
     # @mock_sts

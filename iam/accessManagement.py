@@ -1,6 +1,5 @@
 import boto3
 sts_client = boto3.client('sts')
-
 def get_temp_access_token(client, role: str):
     if role is None:
         print("Role cannot be null")
