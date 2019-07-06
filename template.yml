@@ -97,7 +97,7 @@ Resources:
               Effect: Allow
               Principal:
                 AWS:
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:user/${IAMUsername}'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:user/cloudguru_admin'
               Action:
                 - 'kms:Create*'
                 - 'kms:Encrypt'
