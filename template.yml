@@ -10,9 +10,6 @@ Parameters:
   CodeDeployRole:
     Type: String
     Description: IAM role to allow AWS CodeDeploy to manage deployment of AWS Lambda functions
-  streamEncryptedKey:
-    Type: String
-    Default: arn:aws:kms:us-west-2:674028589551:key/d10ead92-37e9-429b-98c7-9397a2a113da
   Stage:
     Type: String
     Description: The name for a project pipeline stage, such as Staging or Prod, for which resources are provisioned and deployed.
