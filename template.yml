@@ -37,8 +37,15 @@ Resources:
           APP_CONFIG_PATH: 'parameterStoreBlog'
           AWS_XRAY_TRACING_NAME: 'ParameterStoreBlogFunctionDev'
       Runtime: 'python3.6'
+      CodeUri: ./
       Timeout: 5
       Tracing: 'Active'
+      Events:
+        Type: Api
+          Properties:
+            Path: /getConfig
+            Method: GET
+
     ParameterStoreBlogFunctionRoleDev:
       Type: AWS::IAM::Role
       Properties:
