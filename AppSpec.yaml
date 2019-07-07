@@ -1,0 +1,24 @@
+version: 1.0
+Resources:
+  Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: 'ParameterStoreBlogFunctionDev'
+      Description: 'Integrating lambda with Parameter Store'
+      Handler: 'config_store.config_handler.lambda_handler'
+      Environment:
+        Variables:
+          ENV: 'dev'
+          APP_CONFIG_PATH: 'parameterStoreBlog'
+          AWS_XRAY_TRACING_NAME: 'ParameterStoreBlogFunctionDev'
+      Runtime: 'python3.6'
+      CodeUri: ./
+      Timeout: 5
+      Tracing: 'Active'
+      Events:
+        Type: Api
+          Properties:
+            Path: /getConfig
+            Method: GET
+#Hooks:
+#  - BeforeAllowTraffic: "LambdaFunctionToValidateBeforeTrafficShift"
+#  - AfterAllowTraffic: "LambdaFunctionToValidateAfterTrafficShift"
