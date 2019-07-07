@@ -2,7 +2,7 @@
 
 aws_working_dir=$HOME/working/cloud-computing/lambda-demos
 
-stack_name=lambda-with-env-store
+stack_name=lambda-with-env-store-test
 
 aws cloudformation deploy \
 --stack-name $stack_name \
