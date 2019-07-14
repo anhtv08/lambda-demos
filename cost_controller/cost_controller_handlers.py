@@ -27,7 +27,7 @@ def evaluate_ec2_instance(ec2_client, event):
 
     if not ec2_instance_details:
 
-        tags: [Dict[str, str]] = ec2_instance_details['Reservations'][0]['Instances']['Tags']
+        tags: [Dict[str, str]] = ec2_instance_details['Reservations'][0]['Instances'][0]['Tags']
 
         '''
          if not tags then terminate the instance
