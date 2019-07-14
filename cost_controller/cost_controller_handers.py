@@ -20,7 +20,6 @@ def evaluate_ec2_instance(ec2_client, event):
     if instance_state != 'pending':
         return
 
-
     InstanceIds = [
                       instance_id
                   ],
