@@ -47,11 +47,18 @@ def shutdown_ec2_instance(ec2_client, instanceId):
     )
 
 
-def validate_tag_name(tag: Dict[str, str]):
+def validate_tag_name(tags: Dict[str, str]):
     required_tag_names: Sequence[str] = ['environment', 'owner', 'projectName', 'costCentre']
-    for item in tag.keys():
-        if item not in required_tag_names:
-            return False
+    key_tags = tags.keys()
+
+    is_valid = True
+
+    for required_tag in required_tag_names:
+        if required_tag not in key_tags:
+            is_valid = False
+            break
+
+    return is_valid
 
 
 def lambda_handler(event, context):
