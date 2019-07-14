@@ -24,6 +24,23 @@ Globals:
       Role: !Ref CodeDeployRole
 
 Resources:
+
+  ruleEvaluationDev:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: 'ParameterStoreBlogFunctionDev'
+      Description: 'Integrating lambda with Parameter Store'
+      Handler: 'cost_controller.cost_controller_handlers.lambda_handler'
+      Runtime: 'python3.6'
+      CodeUri: s3://joey-my-sam-app/dev-latest
+      Timeout: 5
+      Tracing: 'Active'
+#      Events:
+#        Type: Api
+#          Properties:
+#            Path: /getConfig
+#            Method: GET
+
   ParameterStoreBlogFunctionDev:
     Type: 'AWS::Serverless::Function'
     Properties:
