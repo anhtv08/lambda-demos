@@ -49,7 +49,7 @@ def shutdown_ec2_instance(ec2_client, instanceId):
 
 def validate_tag_name(tag: Dict[str, str]):
     required_tag_names: Sequence[str] = ['environment', 'owner', 'projectName', 'costCentre']
-    for item in tag:
+    for item in tag.keys():
         if item not in required_tag_names:
             return False
 
