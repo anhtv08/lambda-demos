@@ -64,6 +64,6 @@ def validate_tag_name(tags: Dict[str, str]):
 def lambda_handler(event, context):
     print(" evaluating tags of ec2 instance")
     if not event:
-        evaluate_ec2_instance(ec2_client, event)
-    else:
         print("event is not valid")
+    else:
+        evaluate_ec2_instance(ec2_client, event)
