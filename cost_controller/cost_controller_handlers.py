@@ -1,7 +1,9 @@
 from typing import Dict
 from typing import Sequence
 import boto3
+
 ec2_client = boto3.client('ec2')
+
 
 def evaluate_ec2_instance(ec2_client, event):
     instance_id = event['detail']['instance-id']
