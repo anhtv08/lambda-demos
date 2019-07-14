@@ -14,6 +14,7 @@ def evaluate_ec2_instance(ec2_client, event):
         check if instance state is pending then try to perfrom evaluation 
     '''
     if instance_state != 'pending':
+        print('current state : ' + instance_state)
         return
 
     InstanceIds = [
