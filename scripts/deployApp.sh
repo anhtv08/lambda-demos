@@ -21,3 +21,10 @@ aws deploy push --application-name $APPLICATION_NAME \
 aws deploy create-deployment --application-name $APPLICATION_NAME \
 	--s3-location bucket="$DEPLOYMENT_BUCKET",key="$REVISION",bundleType=zip \
 	--deployment-group-name $DEPLOYMENT_GROUP
+
+
+declare -a arr=(aws-codestar-us-west-2-504441261471 aws-codestar-us-west-2-504441261471-aws-code-star-e-pipe aws-codestar-us-west-2-504441261471-aws-code-star-w-pipe code-star-config-bucket elasticbeanstalk-us-east-1-504441261471 elasticbeanstalk-us-east-2-504441261471 elasticbeanstalk-us-west-2-504441261471 j-bucket-with-encryption j-my-flowlogs j-my-shared-bucket joey-aws-test-provision joey-mytestbucket joey-textract-console-us-west-2 textract-console-us-west-2-5bcf13e1-91ea-4396-9597-066673992ebc)
+
+for item in "${arr[@]}"; do
+    aws s3 rb s3://$item --force --recursive --profile joey-cli-devops-admin
+done
