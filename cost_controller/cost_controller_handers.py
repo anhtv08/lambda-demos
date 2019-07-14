@@ -1,13 +1,7 @@
 from typing import Dict
 from typing import Sequence
 import boto3
-
-sts_client = boto3.client('sts')
-
 ec2_client = boto3.client('ec2')
-
-sqs_client = boto3.client('sqs')
-
 
 def evaluate_ec2_instance(ec2_client, event):
     instance_id = event['detail']['instance-id']
