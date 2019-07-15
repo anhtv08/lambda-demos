@@ -9,7 +9,7 @@ Resources:
     Properties:
       FunctionName: 'cost-controller-function'
       Description: 'Integrating lambda with Parameter Store'
-      Handler: 'cost_controller_handlers.lambda_handler'
+      Handler: 'cost_controller.cost_controller_handlers.lambda_handler'
       Runtime: 'python3.6'
       Role: 'arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function'
       Timeout: 5

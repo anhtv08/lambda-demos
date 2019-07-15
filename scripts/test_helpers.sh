@@ -59,7 +59,7 @@ if [[ $with_tag == '1' ]]; then
 else
    echo "start 100 new instances with no tags"
 
-   for i in `seq 10`; do
+   for i in `seq 1`; do
     echo "launching instance at index:$i"
     launch_new_instance
    done
