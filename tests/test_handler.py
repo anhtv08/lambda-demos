@@ -1,5 +1,7 @@
 import unittest
 import index
+import cost_controller_handlers
+from typing import Dict
 class TestHandlerCase(unittest.TestCase):
 
     # @mock_sts
@@ -15,6 +17,38 @@ class TestHandlerCase(unittest.TestCase):
         self.assertEqual(result['statusCode'], 200)
         self.assertEqual(result['headers']['Content-Type'], 'application/json')
         self.assertIn('Hello World', result['body'])
+
+
+    def test_evaluate_instance_tags(self):
+
+
+        # Given full required tags
+        tags = {}
+        tags['environment'] = 'dev'
+        tags['owner'] = 'dev'
+        tags['projectName'] = 'dev'
+        tags['costCentre'] = 'dev'
+
+
+        result = cost_controller_handlers.validate_tag_name(tags)
+        self.assertTrue(result)
+
+        # given missing required tags:
+
+        tags.clear()
+
+        tags['environment'] = 'dev'
+        tags['owner'] = 'dev'
+        tags['projectName'] = 'dev'
+
+        result = cost_controller_handlers.validate_tag_name(tags)
+        self.assertFalse(result)
+
+        # no tags provided:
+
+        tags.clear()
+        result = cost_controller_handlers.validate_tag_name(tags)
+        self.assertFalse(result)
 
 
 if __name__ == '__main__':

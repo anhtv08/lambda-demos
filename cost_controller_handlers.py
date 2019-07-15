@@ -1,7 +1,7 @@
-from typing import Dict
 from typing import Sequence
 import logging as log
 import boto3
+from typing import Dict
 
 ec2_client = boto3.client('ec2')
 
