@@ -1,7 +1,6 @@
 from typing import Sequence
 import logging as log
 import boto3
-from typing import Dict
 from typing import List
 
 
@@ -23,20 +22,40 @@ def evaluate_ec2_instance(ec2_client, event):
         log.info('current state : ' + instance_state)
         return
 
-    ec2_instance = ec2_resource.Instance(instance_id)
+    InstanceIds = [
+                      instance_id
+                  ]
 
-    tag_list: List[str] = []
+    ec2_instance_details = ec2_client.describe_instances(
+        InstanceIds=InstanceIds
+    )
 
-    if ec2_instance.tags:
-        for tag in ec2_instance.tags:
-            tag_list.append(tag['Key'])
+    if ec2_instance_details:
 
-    if not tag_list:
-        log.info("Instance having no tags at all")
-        shutdown_ec2_instance(ec2_client, instance_id)
-    else:
-        if not validate_tag_name(tag_list):
-            log.info("Required tags are not defined!")
+        log.info(ec2_instance_details)
+        try:
+            tag_list: List[str] = []
+            tags = ec2_instance_details['Reservations'][0]['Instances'][0]['Tags']
+            log.info(tags)
+
+            '''
+             if not tags then terminate the instance
+             mandatory tags names are not provided then shutdown also
+            '''
+            if not tags:
+                log.info("Instance having no tags at all")
+                shutdown_ec2_instance(ec2_client, instance_id)
+            else:
+
+                # get list of tag Name
+                for item in tags:
+                    tag_list.append(item['Name'])
+                if not validate_tag_name(tag_list):
+                    log.info("Required tags are not defined!")
+                    shutdown_ec2_instance(ec2_client, instance_id)
+        except Exception as ex:
+            log.debug(ex)
+            log.info("There are is not tag, shutting down the instance id : " + instance_id)
             shutdown_ec2_instance(ec2_client, instance_id)
 
 def shutdown_ec2_instance(ec2_client, instanceId):
