@@ -1,6 +1,10 @@
 Welcome to the AWS CodeStar sample web service
 ==============================================
 
+
+What's Here
+-----------
+
 This is a collection of lambda functions is well organized in various categories:
 - iam
 - cognito
@@ -8,19 +12,6 @@ This is a collection of lambda functions is well organized in various categories
 - config store
 - cost controller
 - scripts folder containing the helper function for quick deploying SAM application 
-
-What's Here
------------
-
-This sample includes:
-
-* README.md - this file
-* template.yml - this file contains the AWS Serverless Application Model (AWS SAM) used
-  by AWS CloudFormation to deploy your application to AWS Lambda and Amazon API
-  Gateway.
-* tests/ - this directory contains unit tests for your application
-
-
 
 Test application
 ------------------
