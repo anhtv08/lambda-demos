@@ -1,190 +1,46 @@
 AWSTemplateFormatVersion: 2010-09-09
-Transform:
-- AWS::Serverless-2016-10-31
-- AWS::CodeStar
-
-Parameters:
-  ProjectId:
-    Type: String
-    Description: CodeStar projectId used to associate new resources to team members
-  CodeDeployRole:
-    Type: String
-    Description: IAM role to allow AWS CodeDeploy to manage deployment of AWS Lambda functions
-  Stage:
-    Type: String
-    Description: The name for a project pipeline stage, such as Staging or Prod, for which resources are provisioned and deployed.
-    Default: ''
-
-Globals:
-  Function:
-    AutoPublishAlias: live
-    DeploymentPreference:
-      Enabled: true
-      Type: Canary10Percent5Minutes
-      Role: !Ref CodeDeployRole
-
+Transform: 'AWS::Serverless-2016-10-31'
 Resources:
-
   ruleEvaluationDev:
     Type: 'AWS::Serverless::Function'
     Properties:
-      FunctionName: 'ParameterStoreBlogFunctionDev'
+      FunctionName: 'cost-controller-function'
       Description: 'Integrating lambda with Parameter Store'
       Handler: 'cost_controller.cost_controller_handlers.lambda_handler'
       Runtime: 'python3.6'
-      CodeUri: s3://joey-my-sam-app/dev-latest
+      Role: 'arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function'
       Timeout: 5
       Tracing: 'Active'
-#      Events:
-#        Type: Api
-#          Properties:
-#            Path: /getConfig
-#            Method: GET
-
-  ParameterStoreBlogFunctionDev:
-    Type: 'AWS::Serverless::Function'
+  EventRule:
+    Type: AWS::Events::Rule
     Properties:
-      FunctionName: 'ParameterStoreBlogFunctionDev'
-      Description: 'Integrating lambda with Parameter Store'
-      Handler: 'config_store.config_handler.lambda_handler'
-      Role: !GetAtt ParameterStoreBlogFunctionRoleDev.Arn
-      Environment:
-        Variables:
-          ENV: 'dev'
-          APP_CONFIG_PATH: 'parameterStoreBlog'
-          AWS_XRAY_TRACING_NAME: 'ParameterStoreBlogFunctionDev'
-      Runtime: 'python3.6'
-      CodeUri: ./
-      Timeout: 5
-      Tracing: 'Active'
-      Events:
-        Type: Api
-          Properties:
-            Path: /getConfig
-            Method: GET
+      Description: "evaluate ec2 instance state changes"
+      Name: "ec2-resource-evaluation-rule"
+      EventPattern:
+        source:
+          - "aws.ec2"
+        detail-type:
+          - "EC2 Instance State-change Notification"
+        detail:
+          state:
+            - "pending"
+      State: "ENABLED"
+      Targets:
+        - Arn:
+            Fn::GetAtt:
+              - "ruleEvaluationDev"
+              - "Arn"
+          Id: "TargetFunctionV1"
 
-    ParameterStoreBlogFunctionRoleDev:
-      Type: AWS::IAM::Role
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - 'lambda.amazonaws.com'
-              Action:
-                - 'sts:AssumeRole'
-        ManagedPolicyArns:
-          - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-        Policies:
-          - PolicyName: 'ParameterStoreBlogDevParameterAccess'
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - 'ssm:GetParameter*'
-                  Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/dev/parameterStoreBlog*'
-          - PolicyName: 'ParameterStoreBlogDevXRayAccess'
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - 'xray:PutTraceSegments'
-                    - 'xray:PutTelemetryRecords'
-                  Resource: '*'
-
-  ParameterStoreBlogDevEncryptionKeyAlias:
-    Type: AWS::KMS::Alias
+  PermissionForEventsToInvokeLambda:
+    Type: AWS::Lambda::Permission
     Properties:
-      AliasName: 'alias/ParameterStoreBlogKeyDev'
-      TargetKeyId: !Ref ParameterStoreBlogDevEncryptionKey
-    ParameterStoreBlogDevEncryptionKey:
-      Type: AWS::KMS::Key
-      Properties:
-        Description: 'Encryption key for secret config values for the Parameter Store blog post'
-        Enabled: True
-        EnableKeyRotation: False
-        KeyPolicy:
-          Version: '2012-10-17'
-          Id: 'key-default-1'
-          Statement:
-            - Sid: 'Allow administration of the key & encryption of new values'
-              Effect: Allow
-              Principal:
-                AWS:
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:user/cloudguru_admin'
-              Action:
-                - 'kms:Create*'
-                - 'kms:Encrypt'
-                - 'kms:Describe*'
-                - 'kms:Enable*'
-                - 'kms:List*'
-                - 'kms:Put*'
-                - 'kms:Update*'
-                - 'kms:Revoke*'
-                - 'kms:Disable*'
-                - 'kms:Get*'
-                - 'kms:Delete*'
-                - 'kms:ScheduleKeyDeletion'
-                - 'kms:CancelKeyDeletion'
-              Resource: '*'
-            - Sid: 'Allow use of the key'
-              Effect: Allow
-              Principal:
-                AWS: !GetAtt ParameterStoreBlogFunctionRoleDev.Arn
-              Action:
-                - 'kms:Encrypt'
-                - 'kms:Decrypt'
-                - 'kms:ReEncrypt*'
-                - 'kms:GenerateDataKey*'
-                - 'kms:DescribeKey'
-              Resource: '*'
-  HelloWorld:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: index.handler
-      Runtime: python3.7
-      Role:
+      FunctionName:
+        Ref: "ruleEvaluationDev"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn:
         Fn::GetAtt:
-        - LambdaExecutionRole
-        - Arn
-      Events:
-        GetEvent:
-          Type: Api
-          Properties:
-            Path: /
-            Method: get
-        PostEvent:
-          Type: Api
-          Properties:
-            Path: /
-            Method: post
-  signingS3LambdaFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: s3_signature.s3_handlers.lambda_handler
-      Runtime: python3.7
-      Role:
-        Fn::GetAtt:
-          - LambdaExecutionRole
-          - Arn
-  LambdaExecutionRole:
-    Description: Creating service role in IAM for AWS Lambda
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub 'CodeStar-${ProjectId}-Execution${Stage}'
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: [lambda.amazonaws.com]
-          Action: sts:AssumeRole
-      Path: /
-      ManagedPolicyArns:
-        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
-
-#      arn:aws:iam::aws:policy/AWSLambdaFullAccess
+          - "EventRule"
+          - "Arn"
 

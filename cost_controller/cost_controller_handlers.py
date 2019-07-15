@@ -19,20 +19,23 @@ def evaluate_ec2_instance(ec2_client, event):
 
     InstanceIds = [
                       instance_id
-                  ],
+                  ]
 
     ec2_instance_details = ec2_client.describe_instances(
         InstanceIds=InstanceIds
     )
 
-    if not ec2_instance_details:
+    if ec2_instance_details:
 
+        print(ec2_instance_details)
         tags: [Dict[str, str]] = ec2_instance_details['Reservations'][0]['Instances'][0]['Tags']
 
         '''
          if not tags then terminate the instance
          mandatory tags names are not provided then shutdown also
         '''
+
+        print(tags)
         if not tags:
             shutdown_ec2_instance(ec2_client, instance_id)
         else:
@@ -41,6 +44,7 @@ def evaluate_ec2_instance(ec2_client, event):
 
 
 def shutdown_ec2_instance(ec2_client, instanceId):
+    print("shutting down instance-id :" + instanceId)
     ec2_client.stop_instances(
         InstanceIds=[
             instanceId

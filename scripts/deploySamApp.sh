@@ -1,22 +1,18 @@
 #!/usr/bin/env bash
 
-revision=$1
-
 bucket_name=joey-my-sam-app
-aws s3 mb s3://bucketname
-
-
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
+project_dir=$HOME/working/cloud-computing/lambda-demos
 
 # packaging application
 sam package \
-    --output-template-file $DIR/packaged.yaml \
-    --s3-bucket $bucket_name
+    --output-template-file $project_dir/output/packaged.yaml \
+    --s3-bucket $bucket_name > /dev/null
 
 
 # deploying application
+
+echo "Deploying lambda functions:"
 sam deploy \
-    --template-file $$DIR/packaged.yaml \
-    --stack-name sam-app \
-    --capabilities CAPABILITY_IAM \
+    --template-file $project_dir/output/packaged.yaml \
+    --stack-name sam-app-1 \
+    --capabilities CAPABILITY_IAM

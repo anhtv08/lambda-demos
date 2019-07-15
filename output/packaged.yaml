@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  ruleEvaluationDev:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: cost-controller-function
+      Description: Integrating lambda with Parameter Store
+      Handler: cost_controller.cost_controller_handlers.lambda_handler
+      Runtime: python3.6
+      Role: arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function
+      Timeout: 5
+      Tracing: Active
+      CodeUri: s3://joey-my-sam-app/4e0f50da1a80500a649d896fc9becda7
+  EventRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: evaluate ec2 instance state changes
+      Name: ec2-resource-evaluation-rule
+      EventPattern:
+        source:
+        - aws.ec2
+        detail-type:
+        - EC2 Instance State-change Notification
+        detail:
+          state:
+          - pending
+      State: ENABLED
+      Targets:
+      - Arn:
+          Fn::GetAtt:
+          - ruleEvaluationDev
+          - Arn
+        Id: TargetFunctionV1
+  PermissionForEventsToInvokeLambda:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Ref: ruleEvaluationDev
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - EventRule
+        - Arn
