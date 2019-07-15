@@ -11,7 +11,7 @@ Resources:
       Role: arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function
       Timeout: 5
       Tracing: Active
-      CodeUri: s3://joey-my-sam-app/4e0f50da1a80500a649d896fc9becda7
+      CodeUri: s3://joey-my-sam-app/436d64043c8176d6a69b9cb9287f2a0a
   EventRule:
     Type: AWS::Events::Rule
     Properties:
@@ -22,9 +22,6 @@ Resources:
         - aws.ec2
         detail-type:
         - EC2 Instance State-change Notification
-        detail:
-          state:
-          - pending
       State: ENABLED
       Targets:
       - Arn:

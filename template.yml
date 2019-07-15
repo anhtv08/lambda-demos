@@ -1,5 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: 'AWS::Serverless-2016-10-31'
+#Parameters:
+#  LambdaExecutionRole:
+
 Resources:
   ruleEvaluationDev:
     Type: 'AWS::Serverless::Function'
@@ -21,9 +24,6 @@ Resources:
           - "aws.ec2"
         detail-type:
           - "EC2 Instance State-change Notification"
-        detail:
-          state:
-            - "pending"
       State: "ENABLED"
       Targets:
         - Arn:

@@ -37,9 +37,11 @@ def evaluate_ec2_instance(ec2_client, event):
 
         print(tags)
         if not tags:
+            print("Instance having no tags at all")
             shutdown_ec2_instance(ec2_client, instance_id)
         else:
             if not validate_tag_name(tags):
+                print("Required tags are not defined!")
                 shutdown_ec2_instance(ec2_client, instance_id)
 
 
