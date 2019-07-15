@@ -11,7 +11,7 @@ function run_new_instance_with_tags() {
     sub_net_id=subnet-0876ad10627174bc8
     vpc_id=vpc-d43addbf
 
-    echo "running new ec2 micro instance"
+    echo "running new ec2 micro instance with appropriate tags"
     ret_instance_id=$(aws ec2 run-instances \
     --image-id $iam_id --count 1 \
     --instance-type $instance_type \
@@ -24,6 +24,7 @@ function run_new_instance_with_tags() {
 
 }
 function launch_new_instance() {
+    echo "Running new instance with no tag"
     iam_id=ami-0d8f6eb4f641ef691
     instance_type=t2.micro
     key_pair_name=my_ec2_kp
@@ -53,10 +54,16 @@ function terminate_instance() {
 with_tag=$1
 
 
-if [[ $with_tag=='1' ]]; then
+if [[ $with_tag == '1' ]]; then
     run_new_instance_with_tags
 else
-   launch_new_instance
+   echo "start 100 new instances with no tags"
+
+   for i in `seq 10`; do
+    echo "launching instance at index:$i"
+    launch_new_instance
+   done
+
 fi
 #
 
