@@ -1,6 +1,6 @@
 import unittest
 import index
-import cost_controller_handlers
+from cost_controller import cost_controller_handlers
 import boto3
 from events import testEvent
 from moto import mock_ec2
