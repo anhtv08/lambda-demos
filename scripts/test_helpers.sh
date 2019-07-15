@@ -50,12 +50,8 @@ function terminate_instance() {
 
 }
 
-
-
-with_tag=
-
+with_tag='n'
 read -p 'Create an instance with appropriate tags: (y/n):' with_tag
-
 
 if [[ $with_tag == 'y' ]]; then
     run_new_instance_with_tags
