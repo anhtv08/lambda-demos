@@ -1,9 +1,9 @@
 import unittest
 import index
 import cost_controller_handlers
-from typing import Dict
-
-
+import boto3
+from events import testEvent
+ec2_client = boto3.client('ec2')
 class TestHandlerCase(unittest.TestCase):
 
     # @mock_sts
@@ -43,5 +43,12 @@ class TestHandlerCase(unittest.TestCase):
         self.assertFalse(result)
 
 
+    def test_evaluate_ec2_instance(self):
+        testStateChangeEven = testEvent()
+        cost_controller_handlers.evaluate_ec2_instance(
+            ec2_client,
+            testStateChangeEven.ec2_state_changes()
+        )
+        pass
 if __name__ == '__main__':
     unittest.main()

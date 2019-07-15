@@ -73,7 +73,7 @@ class testEvent:
             "arn:aws:ec2:us-east-1:123456789012:instance/i-abcd1111"
           ],
           "detail": {
-            "instance-id": "i-abcd1111",
+            "instance-id": "i-0297bc4e21c256f8d",
             "state": "pending"
           }
         }
