@@ -22,6 +22,10 @@ This sample includes:
 
 
 
+Test application
+------------------
+
+1. Run ``python -m unittest``
 
 How deploy application?
 ------------------
