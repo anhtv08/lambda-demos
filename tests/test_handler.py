@@ -3,7 +3,9 @@ import index
 import cost_controller_handlers
 import boto3
 from events import testEvent
-ec2_client = boto3.client('ec2')
+from moto import mock_ec2
+
+
 class TestHandlerCase(unittest.TestCase):
 
     # @mock_sts
@@ -42,13 +44,18 @@ class TestHandlerCase(unittest.TestCase):
         result = cost_controller_handlers.validate_tag_name(tags)
         self.assertFalse(result)
 
-
+    @mock_ec2
     def test_evaluate_ec2_instance(self):
         testStateChangeEven = testEvent()
+        ec2_client = boto3.client('ec2', region_name='us-east-2')
+
         cost_controller_handlers.evaluate_ec2_instance(
             ec2_client,
             testStateChangeEven.ec2_state_changes()
         )
-        pass
+        ec2_instances = ec2_client.describe_instances()['Reservations'][0]['Instances']
+        assert len(ec2_instances) == 1
+
+
 if __name__ == '__main__':
     unittest.main()

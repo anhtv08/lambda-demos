@@ -2,6 +2,7 @@ from typing import Sequence
 import logging as log
 import boto3
 from typing import List
+from typing import Dict
 ec2_client = boto3.client('ec2')
 
 
@@ -26,9 +27,8 @@ def get_tag_for_instance_id(ec2_client, instance_id):
                 if not tags:
                     return tag_list
                 else:
-                    # get list of tag Name
                     for item in tags:
-                        tag_list.append(item['Name'])
+                        tag_list.append(item['Key'])
             except Exception as ex:
                 log.debug(ex)
                 return tag_list
