@@ -9,6 +9,38 @@ ec2_client = boto3.client('ec2')
 ec2_resource = boto3.client('ec2')
 
 
+def get_tag_for_instance_id(ec2_client, instance_id):
+    tag_list: List[str] = []
+    InstanceIds = [
+        instance_id
+    ]
+
+    ec2_instance_details = ec2_client.describe_instances(
+        InstanceIds=InstanceIds
+    )
+
+    if ec2_instance_details:
+
+        log.info(ec2_instance_details)
+        try:
+
+            tags = ec2_instance_details['Reservations'][0]['Instances'][0]['Tags']
+            log.info(tags)
+
+            '''
+             if not tags then terminate the instance
+             mandatory tags names are not provided then shutdown also
+            '''
+            if not tags:
+                return tag_list
+            else:
+                # get list of tag Name
+                for item in tags:
+                    tag_list.append(item['Name'])
+        except Exception as ex:
+            log.debug(ex)
+            return tag_list
+
 
 def evaluate_ec2_instance(ec2_client, event):
     instance_id = event['detail']['instance-id']
@@ -22,41 +54,15 @@ def evaluate_ec2_instance(ec2_client, event):
         log.info('current state : ' + instance_state)
         return
 
-    InstanceIds = [
-                      instance_id
-                  ]
+    tag_list = get_tag_for_instance_id(ec2_client, instance_id)
 
-    ec2_instance_details = ec2_client.describe_instances(
-        InstanceIds=InstanceIds
-    )
-
-    if ec2_instance_details:
-
-        log.info(ec2_instance_details)
-        try:
-            tag_list: List[str] = []
-            tags = ec2_instance_details['Reservations'][0]['Instances'][0]['Tags']
-            log.info(tags)
-
-            '''
-             if not tags then terminate the instance
-             mandatory tags names are not provided then shutdown also
-            '''
-            if not tags:
-                log.info("Instance having no tags at all")
-                shutdown_ec2_instance(ec2_client, instance_id)
-            else:
-
-                # get list of tag Name
-                for item in tags:
-                    tag_list.append(item['Name'])
-                if not validate_tag_name(tag_list):
-                    log.info("Required tags are not defined!")
-                    shutdown_ec2_instance(ec2_client, instance_id)
-        except Exception as ex:
-            log.debug(ex)
-            log.info("There are is not tag, shutting down the instance id : " + instance_id)
+    if not tag_list:
+        shutdown_ec2_instance(ec2_client, instance_id)
+    else:
+        if not validate_tag_name(tag_list):
             shutdown_ec2_instance(ec2_client, instance_id)
+        else:
+            log.info("Instance has been tagged properly")
 
 def shutdown_ec2_instance(ec2_client, instanceId):
     log.info("shutting down instance-id :" + instanceId)
