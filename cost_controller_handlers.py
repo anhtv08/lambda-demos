@@ -15,7 +15,7 @@ def evaluate_ec2_instance(ec2_client, event):
         check if instance state is pending then try to perfrom evaluation 
     '''
     if instance_state != 'pending':
-        print('current state : ' + instance_state)
+        log.info('current state : ' + instance_state)
         return
 
     InstanceIds = [
@@ -28,30 +28,30 @@ def evaluate_ec2_instance(ec2_client, event):
 
     if ec2_instance_details:
 
-        print(ec2_instance_details)
+        log.info(ec2_instance_details)
         try:
             tags: [Dict[str, str]] = ec2_instance_details['Reservations'][0]['Instances'][0]['Tags']
-            print(tags)
+            log.info(tags)
 
             '''
              if not tags then terminate the instance
              mandatory tags names are not provided then shutdown also
             '''
             if not tags:
-                print("Instance having no tags at all")
+                log.info("Instance having no tags at all")
                 shutdown_ec2_instance(ec2_client, instance_id)
             else:
                 if not validate_tag_name(tags):
-                    print("Required tags are not defined!")
+                    log.info("Required tags are not defined!")
                     shutdown_ec2_instance(ec2_client, instance_id)
         except Exception as ex:
             log.debug(ex)
-            print("There are is not tag, shutting down the instance id : " + instance_id)
+            log.info("There are is not tag, shutting down the instance id : " + instance_id)
             shutdown_ec2_instance(ec2_client, instance_id)
 
 
 def shutdown_ec2_instance(ec2_client, instanceId):
-    print("shutting down instance-id :" + instanceId)
+    log.info("shutting down instance-id :" + instanceId)
     ec2_client.terminate_instances(
         InstanceIds=[
             instanceId
@@ -74,8 +74,8 @@ def validate_tag_name(tags: Dict[str, str]):
 
 
 def lambda_handler(event, context):
-    print(" evaluating tags of ec2 instance")
+    log.info(" evaluating tags of ec2 instance")
     if not event:
-        print("event is not valid")
+        log.info("event is not valid")
     else:
         evaluate_ec2_instance(ec2_client, event)
