@@ -26,7 +26,7 @@ This sample includes:
 How deploy application?
 ------------------
 1. Run ``sh scripts/create_bucket.sh`` for provisioning the bucket- the container for application deployment file
-2. Run ``sh scripts/deploySamApp.sh`` for deploying the lamda function to aws
+2. Run ``sh scripts/deploySamApp.sh`` for deploying the lambda function to aws
 
 
 Verify deployment?
