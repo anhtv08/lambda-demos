@@ -40,7 +40,7 @@ def get_tag_for_instance_id(ec2_client, instance_id):
         except Exception as ex:
             log.debug(ex)
             return tag_list
-
+    return tag_list
 
 def evaluate_ec2_instance(ec2_client, event):
     instance_id = event['detail']['instance-id']
