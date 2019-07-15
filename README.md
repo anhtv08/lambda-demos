@@ -26,5 +26,16 @@ How deploy application?
 
 Post deployment Verification
 ------------------
-1. Run ``sh scripts/test_helper.sh 0`` for creating the ec2 instance with no tag, it should get terminated by the lambda function
-2. Run ``sh scripts/test_helper.sh 1`` for creating the ec2 instance with required tags, it should get started normally
+1. Run ``sh scripts/test_helper.sh`` - y for an instance with required tags, and no for new instance with no tags, it should get killed by the lambda function  
+
+Example output:
+
+```
+(venv) anhs-MBP:lambda-demos anhtrang$ sh scripts/test_helpers.sh
+Create an instance with appropriate tags: (y/n):n
+start 100 new instances with no tags
+launching instance at index:1
+Running new instance with no tag
+running new ec2 micro instance
+```
+

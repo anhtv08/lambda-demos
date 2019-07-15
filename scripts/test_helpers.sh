@@ -51,10 +51,13 @@ function terminate_instance() {
 }
 
 
-with_tag=$1
+
+with_tag=
+
+read -p 'Create an instance with appropriate tags: (y/n):' with_tag
 
 
-if [[ $with_tag == '1' ]]; then
+if [[ $with_tag == 'y' ]]; then
     run_new_instance_with_tags
 else
    echo "start 100 new instances with no tags"
