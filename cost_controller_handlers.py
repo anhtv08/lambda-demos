@@ -1,5 +1,6 @@
 from typing import Dict
 from typing import Sequence
+import logging as log
 import boto3
 
 ec2_client = boto3.client('ec2')
@@ -44,6 +45,7 @@ def evaluate_ec2_instance(ec2_client, event):
                     print("Required tags are not defined!")
                     shutdown_ec2_instance(ec2_client, instance_id)
         except Exception as ex:
+            log.debug(ex)
             print("There are is not tag, shutting down the instance id : " + instance_id)
             shutdown_ec2_instance(ec2_client, instance_id)
 
