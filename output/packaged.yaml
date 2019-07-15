@@ -11,7 +11,7 @@ Resources:
       Role: arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function
       Timeout: 5
       Tracing: Active
-      CodeUri: s3://joey-my-sam-app/007c9defceb03ff9faffccd3a0fe73c6
+      CodeUri: s3://joey-my-sam-app/66b92fb451ebf19b983efc495d69d16e
   EventRule:
     Type: AWS::Events::Rule
     Properties:
