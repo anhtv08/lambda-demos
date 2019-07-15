@@ -6,12 +6,12 @@ Resources:
     Properties:
       FunctionName: cost-controller-function
       Description: Integrating lambda with Parameter Store
-      Handler: cost_controller.cost_controller_handlers.lambda_handler
+      Handler: cost_controller_handlers.lambda_handler
       Runtime: python3.6
       Role: arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function
       Timeout: 5
       Tracing: Active
-      CodeUri: s3://joey-my-sam-app/436d64043c8176d6a69b9cb9287f2a0a
+      CodeUri: s3://joey-my-sam-app/fea23bbcefe30298a9547fe4fa76001d
   EventRule:
     Type: AWS::Events::Rule
     Properties:

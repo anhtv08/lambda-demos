@@ -34,7 +34,7 @@ launch_new_instance
 echo "waiting for 5 mins"
 sleep 5m
 
-terminate_instance $ret_instance_id
+#terminate_instance $ret_instance_id
 
 
 #aws ec2
