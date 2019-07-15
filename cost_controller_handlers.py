@@ -52,7 +52,7 @@ def evaluate_ec2_instance(ec2_client, event):
 
 def shutdown_ec2_instance(ec2_client, instanceId):
     print("shutting down instance-id :" + instanceId)
-    ec2_client.stop_instances(
+    ec2_client.terminate_instances(
         InstanceIds=[
             instanceId
         ]
