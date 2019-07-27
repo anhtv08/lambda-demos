@@ -14,6 +14,23 @@ function create_new_bucket() {
     aws s3 mb s3://joey-my-sam-app
 }
 
+function create_test_rds() {
+
+    local db_name='MyTestDb'
+    local user_name=
+    local password=
+
+    aws rds create-db-instance \
+    --db-name $db_name \
+    --db-instance-identifier $db_name \
+    --allocated-storage 5 \
+    --db-instance-class 'db.t2.micro' \
+    --engine 'MySQL' \
+    --master-username $user_name \
+    --master-user-password $password
+
+}
+
 function main() {
     local obj_type=$1
     case $obj_type in
@@ -23,6 +40,9 @@ function main() {
         s3)
             create_new_bucket
             ;;
+        rds)
+           create_test_rds
+           ;;
         *)
              echo "invalid option"
     esac

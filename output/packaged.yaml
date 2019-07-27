@@ -11,7 +11,18 @@ Resources:
       Role: arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function
       Timeout: 5
       Tracing: Active
-      CodeUri: s3://joey-my-sam-app/66b92fb451ebf19b983efc495d69d16e
+      CodeUri: s3://joey-my-sam-app/d540bcf422d5e84e1df1fffb0aa4dabc
+  userManagement:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: user-management
+      Description: user management function
+      Handler: dynamo.DynamoServices.lambda_handler
+      Runtime: python3.6
+      Role: arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function
+      Timeout: 5
+      Tracing: Active
+      CodeUri: s3://joey-my-sam-app/d540bcf422d5e84e1df1fffb0aa4dabc
   EventRule:
     Type: AWS::Events::Rule
     Properties:

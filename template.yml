@@ -15,7 +15,7 @@ Resources:
       Timeout: 5
       Tracing: 'Active'
 
-   userManagement:
+  userManagement:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: 'user-management'

@@ -1,6 +1,7 @@
+import boto3
 import logging as logger
 from botocore.exceptions import ClientError
-dynamo_client = boto3.client('dynamo')
+dynamo_client = boto3.client('dynamodb')
 
 class Person:
     def __init__(self, first_name, last_name, email, age):
