@@ -17,8 +17,10 @@ function create_new_bucket() {
 function create_test_rds() {
 
     local db_name='MyTestDb'
-    local user_name=
-    local password=
+    local user_name='admin'
+    local password='admin123'
+    local db_sg_group='mygs-myrds-public'
+    local db_subnet_group='my-rds-subnet-group'
 
     aws rds create-db-instance \
     --db-name $db_name \
@@ -27,8 +29,13 @@ function create_test_rds() {
     --db-instance-class 'db.t2.micro' \
     --engine 'MySQL' \
     --master-username $user_name \
+    --db-subnet-group-name $db_subnet_group \
     --master-user-password $password
 
+}
+
+function create_public_ec2() {
+    aws ec2
 }
 
 function main() {
