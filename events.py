@@ -294,3 +294,28 @@ class testEvent:
                 'NextToken': 'string'
             }
 
+    def rds_event(self):
+
+        return {
+          "version": "0",
+          "id": "68f6e973-1a0c-d37b-f2f2-94a7f62ffd4e",
+          "detail-type": "RDS DB Instance Event",
+          "source": "aws.rds",
+          "account": "123456789012",
+          "time": "2018-09-27T22:36:43Z",
+          "region": "us-east-1",
+          "resources": [
+            "arn:aws:rds:us-east-1:123456789012:db:mysql-instance-2018-10-06-12-24"
+          ],
+          "detail": {
+            "EventCategories": [
+              "failover"
+            ],
+            "SourceType": "DB_INSTANCE",
+            "SourceArn": "arn:aws:rds:us-east-1:123456789012:db:mysql-instance-2018-10-06-12-24e",
+            "Date": "2018-09-27T22:36:43.292Z",
+            "SourceIdentifier": "rds:mysql-instance-2018-10-06-12-24",
+            "Message": "A Multi-AZ failover has completed."
+          }
+        }
+
