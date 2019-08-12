@@ -11,6 +11,24 @@ s3_client = boto3.client('s3')
 sqs_client = boto3.client('sqs')
 
 
+def create_presigned_upload_url(
+    s3_client,
+    bucket_name,
+    object_name,
+    expiration=3600
+):
+    try:
+        response = s3_client.generate_presigned_post(
+                bucket_name,
+                object_name,
+                ExpiresIn=expiration
+            )
+        return response
+
+    except ClientError as e:
+        logging.error(e)
+        return None
+
 def create_presigned_url(s3_client, bucket_name, object_name, expirations=3600):
     """Generate a presigned URL to share an S3 object
 
