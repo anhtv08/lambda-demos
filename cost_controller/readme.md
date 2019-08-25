@@ -3,7 +3,7 @@
  
  Description
  -----------
- The function will terminate the ec2 instance which doest having required tags when it lanuch
+ The function will terminate the ec2 instance which doest having required tags when it launch and sending notifiction using sns
  
  Build Run and deployment
  -----------
