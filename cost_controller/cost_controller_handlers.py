@@ -47,7 +47,7 @@ def get_tag_for_instance_id(ec2_client, instance_id):
 
 def send_notification(sns_client, topic_arn, instance_id):
     try:
-        response = sns_client.publish(
+        sns_client.publish(
             TopicArn=topic_arn,
             Message='Terminate EC2 instances due to missing required tags, instane_id : ' + instance_id,
             Subject='Terminate EC2 instances due to missing required tags'
