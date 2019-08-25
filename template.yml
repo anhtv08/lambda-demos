@@ -11,7 +11,7 @@ Resources:
       Description: 'Integrating lambda with Parameter Store'
       Handler: 'cost_controller.cost_controller_handlers.lambda_handler'
       Runtime: 'python3.6'
-      Role: 'arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function'
+      Role: 'arn:aws:iam::${AWS::AccountId}:role/service-role/my-rule-evaluation-function'
       Timeout: 5
       Tracing: 'Active'
 
@@ -22,7 +22,7 @@ Resources:
       Description: 'user management function'
       Handler: 'dynamo.DynamoServices.lambda_handler'
       Runtime: 'python3.6'
-      Role: 'arn:aws:iam::674028589551:role/service-role/my-rule-evaluation-function'
+      Role: 'arn:aws:iam::${AWS::AccountId}:role/service-role/my-rule-evaluation-function'
       Timeout: 5
       Tracing: 'Active'
 
