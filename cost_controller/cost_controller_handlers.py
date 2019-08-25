@@ -2,9 +2,16 @@ from typing import Sequence
 import logging as log
 import boto3
 from typing import List
+from botocore.exceptions import ClientError
 from typing import Dict
-ec2_client = boto3.client('ec2')
 
+ec2_client = boto3.client('ec2')
+sns_client = boto3.client('sns')
+
+'''
+my test notificaiton topic ARN, you need to update this accordingly in your aws environment
+'''
+SNS_ARN='arn:aws:sns:us-east-2:674028589551:dynamodb'
 
 def get_tag_for_instance_id(ec2_client, instance_id):
     tag_list: List[str] = []
@@ -37,6 +44,19 @@ def get_tag_for_instance_id(ec2_client, instance_id):
         log.error(e)
     return tag_list
 
+
+def send_notification(sns_client, topic_arn, instance_id):
+    try:
+        response = sns_client.publish(
+            TopicArn=topic_arn,
+            Message='Terminate EC2 instances due to missing required tags, instane_id : ' + instance_id,
+            Subject='Terminate EC2 instances due to missing required tags'
+
+        )
+    except ClientError as ex:
+        log.error("Failed to send notification to topic name : " + topic_arn)
+
+
 def evaluate_ec2_instance(ec2_client, event):
     instance_id = event['detail']['instance-id']
     instance_state = event['detail']['state']
@@ -59,6 +79,7 @@ def evaluate_ec2_instance(ec2_client, event):
         else:
             log.info("Instance has been tagged properly")
 
+
 def shutdown_ec2_instance(ec2_client, instanceId):
     log.info("shutting down instance-id :" + instanceId)
     ec2_client.terminate_instances(
@@ -66,6 +87,7 @@ def shutdown_ec2_instance(ec2_client, instanceId):
             instanceId
         ]
     )
+    send_notification(sns_client, SNS_ARN, instanceId)
 
 
 def validate_tag_name(tags: List[str]):
