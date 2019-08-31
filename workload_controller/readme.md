@@ -1,3 +1,9 @@
+Todo:
+=======
+
+A template to deploy application
+
+
 Simple lambda example using
 - RDS
 - SQN
